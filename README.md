@@ -12,7 +12,6 @@ A C++ package for evaluating DRP-AI compiled models on Renesas RZ/V2H hardware. 
 ## Prerequisites
 
 - **Hardware:** RZ/V2H Robotics Development Kit
-- **ROS 2 Distribution:** Jazzy or later
 - **Dependencies:** see [package.xml](package.xml)
 
 ## Usage
@@ -37,19 +36,32 @@ names: ['black-bishop', 'black-king', 'black-knight', 'black-pawn', 'black-queen
 ```
 dataset/
 ├── data.yaml
-├── images/
-│   ├── train/
-│   ├── val/
-│   └── test/
-│       ├── image001.jpg
-│       ├── image002.jpg
+├── train/
+│   ├── images/
+│   │   ├── image001.jpg
+│   │   ├── image002.jpg
+│   │   └── ...
+│   └── labels/
+│       ├── image001.txt
+│       ├── image002.txt
 │       └── ...
-└── labels/
-    ├── train/
-    ├── val/
-    └── test/
-        ├── image001.txt
-        ├── image002.txt
+├── valid/
+│   ├── images/
+│   │   ├── val_image001.jpg
+│   │   ├── val_image002.jpg
+│   │   └── ...
+│   └── labels/
+│       ├── val_image001.txt
+│       ├── val_image002.txt
+│       └── ...
+└── test/
+    ├── images/
+    │   ├── test_image001.jpg
+    │   ├── test_image002.jpg
+    │   └── ...
+    └── labels/
+        ├── test_image001.txt
+        ├── test_image002.txt
         └── ...
 ```
 
@@ -100,9 +112,9 @@ The evaluator reports the following metrics:
 ```text
 === YOLOv8 Model Evaluation ===
 Dataset split:   test
-Images dir:      /home/ubuntu/datasets/chess/images/test
-Labels dir:      /home/ubuntu/datasets/chess/labels/test
-Model path:      /home/ubuntu/models/yolov8n_chess_drpai
+Images dir:      /home/ubuntu/./valid/images
+Labels dir:      /home/ubuntu/./valid/labels
+Model path:      /home/ubuntu/models/yolov8_compiled_model
 Image size:      640
 Classes (12): black-bishop, black-king, black-knight...
 ===============================
@@ -177,7 +189,6 @@ bool NewModelEvaluator::load_model(
   const std::vector<std::string> & class_names)
 {
   try {
-    model_ = std::make_unique<YourModelWrapper>();
     model_->load(model_path);
     model_->set_class_names(class_names);
     // Configure model parameters...
